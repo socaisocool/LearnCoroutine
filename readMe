@@ -1,4 +1,6 @@
 
+
+
 挂起函数中调用resume使协程恢复
 suspendCoroutine{
     coroutine->{
@@ -13,6 +15,15 @@ SafeContinuation{
 }
 SafeContinuation、intercepted、$completion都是接口Continuation的子类
 
+设置调度器的原理？比如launch(Dispatchers.Default)后，{}中的代码就都运行在调度器的对应线程中？
 
-suspend{} 协程体->编译器->实现了SuspendLambda(实现BaseContinuationIml(实现Continuation接口))的内部类,在这个内部类中
-有一个invokeSuspend函数，这个函数内部实现就是协程体内部的逻辑
+suspend{协程体} ->编译器->创建一个实现了SuspendLambda(实现BaseContinuationIml(实现Continuation接口))的内部类,在这个内部类中
+有一个invokeSuspend函数，这个函数内部实现就是协程体内部的逻辑;也就是说{协程体}是运行在一个Continuation接口子类的invokeSuspend中
+
+jvm运行的Continuation是经过SafeContinuation代理，并由intercepted进行包装的，而例子中intercepted就是DispatcherContext的interceptContinuation，
+
+dispatcher.dispatch {
+    delagate.resumeWith(result)
+}
+delagate(封装类{协程体}的Continuation)是在dispatcher中被调用
+

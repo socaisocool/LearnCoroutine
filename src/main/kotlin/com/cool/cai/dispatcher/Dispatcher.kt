@@ -31,5 +31,4 @@ private class DispatchedContinuation<T>(val delagate: Continuation<T>, val dispa
             delagate.resumeWith(result)
         }
     }
-
 }

@@ -17,4 +17,5 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1"
     implementation "org.jetbrains.kotlin:kotlin-reflect"
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compileOnly 'com.google.android:android:4.1.1.4'
 }
