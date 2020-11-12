@@ -10,10 +10,13 @@ import kotlin.coroutines.suspendCoroutine
 
 abstract class AbstractCoroutine<T>(override val context: CoroutineContext) : Job, Continuation<T> {
 
-    private val state = AtomicReference<CoroutineState>(CoroutineState.InComplete())
+    protected val state = AtomicReference<CoroutineState>(CoroutineState.InComplete())
 
     override val isActive: Boolean
         get() = state.get() is CoroutineState.InComplete
+
+    override val isComplete: Boolean
+        get() = state.get() is CoroutineState.Complete<*>
 
     override fun invokeOnCompletion(onComplete: OnComplete): Disposable {
         return doOnCompleted {
@@ -45,7 +48,6 @@ abstract class AbstractCoroutine<T>(override val context: CoroutineContext) : Jo
      * 这个挂起函数最终在suspend main这个外部协程体中执行
      */
     private suspend fun joinSuspend() = suspendCoroutine<Unit> { continuation ->
-        println("4")
         doOnCompleted { result ->//这里的result是内部已执行完协程体的结果
             continuation.resume(Unit)//这句才能唤醒main协程体所在的线程
         }
@@ -53,7 +55,6 @@ abstract class AbstractCoroutine<T>(override val context: CoroutineContext) : Jo
 
 
     private fun doOnCompleted(block: (Result<T>) -> Unit): Disposable {
-        println("5")
         val disposable = CompletionHandlerDisposable(this, block)
         val newState = state.updateAndGet { pre ->
             when (pre) {

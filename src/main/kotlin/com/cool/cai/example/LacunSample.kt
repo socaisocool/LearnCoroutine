@@ -24,20 +24,26 @@ import kotlin.coroutines.suspendCoroutine
     才触发外部协程再恢复
 
  */
+
+/**
+ * launch开启的是子线程，a与b两行代码所在的线程不同，相互竞争执行权，
+ * 最外层的协程第一次调用resumeWith，
+ */
 suspend fun main() {
-    val job = launch(Dispatchers.Default) {
+    val job = launch {//a
         log(1)
         log(2)
-        delay({
-            println("延迟两秒打印")
-        }, 2)
         val result = hellow()
         log(2, result)
     }
-    log(job.isActive)
+    log(job.isActive)//b
     job.join()
     log(job.isActive)
+    suspendCoroutine<Unit> { continuation ->
+        continuation.resume(Unit)
+    }
 }
+
 
 /**
  * isDaemon为true 表示线程是守护线程，也就是主线程执行完毕后，
