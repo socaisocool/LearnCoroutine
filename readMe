@@ -1,0 +1,18 @@
+
+挂起函数中调用resume使协程恢复
+suspendCoroutine{
+    coroutine->{
+       coroutine.resume()//resumeWith
+    }
+}
+上面拿到的coroutine就是下面这个
+SafeContinuation{
+   intercepted{//上下文配置的拦截器
+      $completion//这个就是startCoroutine参数中传的回调complete:Continuation
+   }
+}
+SafeContinuation、intercepted、$completion都是接口Continuation的子类
+
+
+suspend{} 协程体->编译器->实现了SuspendLambda(实现BaseContinuationIml(实现Continuation接口))的内部类,在这个内部类中
+有一个invokeSuspend函数，这个函数内部实现就是协程体内部的逻辑

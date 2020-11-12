@@ -1,5 +1,7 @@
 package com.cool.cai.example
+
 import com.cool.cai.delay
+import com.cool.cai.dispatcher.Dispatchers
 import com.cool.cai.launch
 import com.cool.cai.utils.log
 import kotlin.concurrent.thread
@@ -22,8 +24,8 @@ import kotlin.coroutines.suspendCoroutine
     才触发外部协程再恢复
 
  */
-suspend fun main() {
-    val job = launch {
+ fun main() {
+    val job = launch() {
         log(1)
         log(2)
         delay({
@@ -33,7 +35,7 @@ suspend fun main() {
         log(2, result)
     }
     log(job.isActive)
-    job.join()
+//    job.join()
     log(job.isActive)
 }
 
