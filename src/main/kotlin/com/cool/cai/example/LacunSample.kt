@@ -24,8 +24,8 @@ import kotlin.coroutines.suspendCoroutine
     才触发外部协程再恢复
 
  */
- fun main() {
-    val job = launch() {
+suspend fun main() {
+    val job = launch(Dispatchers.Default) {
         log(1)
         log(2)
         delay({
@@ -35,7 +35,7 @@ import kotlin.coroutines.suspendCoroutine
         log(2, result)
     }
     log(job.isActive)
-//    job.join()
+    job.join()
     log(job.isActive)
 }
 
