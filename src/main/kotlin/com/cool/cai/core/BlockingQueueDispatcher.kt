@@ -14,6 +14,9 @@ typealias EventTask = () -> Unit
  */
 class BlockingQueueDispatcher : LinkedBlockingDeque<EventTask>(), Dispatcher {
 
+    /**
+     * 当有resumeWith调用时会触发
+     */
     override fun dispatch(block: () -> Unit) {
         offer { block() }
     }

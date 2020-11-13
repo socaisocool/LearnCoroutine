@@ -32,16 +32,12 @@ import kotlin.coroutines.suspendCoroutine
 suspend fun main() {
     val job = launch {//a
         log(1)
-        log(2)
         val result = hellow()
         log(2, result)
     }
     log(job.isActive)//b
     job.join()
     log(job.isActive)
-    suspendCoroutine<Unit> { continuation ->
-        continuation.resume(Unit)
-    }
 }
 
 

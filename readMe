@@ -27,3 +27,7 @@ dispatcher.dispatch {
 }
 delagate(封装类{协程体}的Continuation)是在dispatcher中被调用
 
+协程体中的挂起函数，后面的挂起函数都是处于上一个挂起函数的作用域，比如
+suspend{ A,B} 挂起函数A、B、A设置的上下文拦截器是处于子线程，如果B没有设置新的上下文拦截器，那么默认使用的
+就是A的上下文拦截器，也会处于子线程中执行
+

@@ -2,6 +2,7 @@ package com.cool.cai
 
 import com.cool.cai.core.BlockingCoroutine
 import com.cool.cai.core.BlockingQueueDispatcher
+import com.cool.cai.core.DeferredCoroutine
 import com.cool.cai.core.StandardCoroutine
 import com.cool.cai.dispatcher.DispatcherContext
 import kotlinx.coroutines.CoroutineName
@@ -25,10 +26,17 @@ fun launch(
 fun <T> runBlocking(context: CoroutineContext = EmptyCoroutineContext, block: suspend () -> T): T {
     val eventQueue = BlockingQueueDispatcher()
     val newContext = context + DispatcherContext(eventQueue)
-    val completion = BlockingCoroutine<T>(newCoroutineContext(newContext), eventQueue)
+    val completion = BlockingCoroutine<T>(newContext, eventQueue)
     block.startCoroutine(completion)
     return completion.joinBlocking()
 }
+
+fun <T> async(context: CoroutineContext = EmptyCoroutineContext, block: suspend () -> T): Deferred<T> {
+    val completion = DeferredCoroutine<T>(newCoroutineContext(context))
+    block.startCoroutine(completion)
+    return completion
+}
+
 
 fun newCoroutineContext(context: CoroutineContext): CoroutineContext {
     val combined = context + CoroutineName("@coroutine#${coroutineIndex.getAndIncrement()}")
